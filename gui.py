@@ -4,6 +4,7 @@ from tkinter import Menu
 from assignment1.assignment1 import *
 from assignment2.assignment2 import *
 from assignment3.assignment3 import *
+from assignment5.assignment5 import *
 
 file_name = ""
 class DataTable(ttk.Treeview):
@@ -295,19 +296,27 @@ class Assignment5(tk.Frame):
         self.pack(fill=BOTH,side=RIGHT,expand=True)
         self._frame =None
         tk.Button(self, text="Naïve Bayesian Classifier.",
-                  command=lambda:self.sub_frame("measures of central tendency") ).place(x=80, y=40)
+                  command=lambda:self.sub_frame("Naïve Bayesian Classifier.") ).place(x=80, y=20)
         tk.Button(self, text="k-NN classifier",
-                  command=lambda: self.sub_frame("dispersion of data")).place(x=280, y=40)
+                  command=lambda: self.sub_frame("k-NN classifier")).place(x=280, y=20)
         tk.Button(self, text="ANN classifier",
-                  command=lambda: self.sub_frame("statistical description")).place(x=400, y=40)
+                  command=lambda: self.sub_frame("ANN classifier")).place(x=400, y=20)
     
             
-    def sub_frame(self):
-        new_frame = Frame(self,width=1000,height=500)
+    def sub_frame(self,title_name):
+        new_frame = Frame(self,width=1200,height=600)
         if self._frame is not None:
             self._frame.destroy()
         self._frame = new_frame
-        self._frame.place(x=20,y=20)
+        self._frame.place(x=20,y=40)
+        if(title_name=="ANN classifier"):
+            ann(file_name,self._frame)
+        elif(title_name=="Naïve Bayesian Classifier."):
+            main()
+        elif(title_name=="k-NN classifier"):
+            knn(file_name, "test","k")
+        
+
         
 
 
