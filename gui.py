@@ -314,7 +314,7 @@ class Assignment5(tk.Frame):
         elif(title_name=="Naïve Bayesian Classifier."):
             main()
         elif(title_name=="k-NN classifier"):
-            knn(file_name, "test","k")
+            knn_main(file_name, self._frame)
         
 
         

@@ -5,8 +5,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix, f1_score
 from sklearn.preprocessing import MinMaxScaler
-import sklearn.linear_model
-from sklearn import preprocessing
+from sklearn.preprocessing import StandardScaler 
 from sklearn import metrics
 import itertools
 import matplotlib.pyplot as plt 
@@ -22,46 +21,92 @@ def calDist(d1, d2, length):
        
     return np.sqrt(distance)
 
+def mode(data):
+    frequency = {}
+    for i in data:
+        frequency.setdefault(i, 0)
+        frequency[i]+=1
 
-def knn(data,test,k):
-    dist = {}
-    length = test.shape[1]
+    most_frequent = max(frequency.values())
+    for i, j in frequency.items():
+        if j == most_frequent:
+            mode = i
+    return mode
+
+def myknn(df,k,input,root):
+    arr = []
+    arr = df["Species"].unique()
+
+    x= df.iloc[:, [0,1,2,3]].values  
+    y= df.iloc[:, 4].values
+
+    
+    x_train, x_test, y_train, y_test= train_test_split(x, y, test_size= 0.25, random_state=0)      
+    st_x= StandardScaler()    
+    x_train= st_x.fit_transform(x_train)    
+    x_test= st_x.transform(x_test)  
+
+    print(y_train)
+    print("train")
+    print(y_test)
+    point = input
+    distance_points = []
+    print(np.linalg.norm(point - x_train[2]))
+    j=0
+    for i in range(len(x_train)):
+        temp = point - x_train[i]
+        sum = np.dot(temp.T,temp)
+        distance_points.append(np.sqrt(sum))
+
+    for i in range(len(x_train),len(df)):
+        distance_points.append(1000)
+    
+    df["distance"] = distance_points
+    
+    x= df.iloc[:, [0,1,2,3,5]].values  
+    y= df.iloc[:, 4].values
+    
+
+    df = df.sort_values(by=['distance'])
+
+    df_first_k = df[1:k]
+    print(df_first_k)
+
+    nearest_neighbour = mode(df_first_k['Species'])
+    print(nearest_neighbour)
+    Label(root,text="Nearest neighbour is "+str(nearest_neighbour),fg='red').place(x=20,y=140)
+    # dist = {}
+    # length = test.shape[1]
     # print(length)
 
-    for i in range(len(data)):    
-        cal_dist = calDist(test,data.iloc[i],length)
-        dist[i] = cal_dist[0]
+    # for i in range(len(data)):    
+    #     cal_dist = calDist(test,data.iloc[i],length)
+    #     dist[i] = cal_dist[0]
     
-    sort_d = sorted(dist.items(),key=operator.itemgetter(1))
+    # sort_d = sorted(dist.items(),key=operator.itemgetter(1))
 
-    nn = []
-    for i in range(k):
-        nn.append(sort_d[i][0])
+    # nn = []
+    # for i in range(k):
+    #     nn.append(sort_d[i][0])
 
-    class_list = data['Species'].unique()
-    class_dict = {}
-    for i in range(len(class_list)):
-        class_dict[class_list[i]] = 0
+    # class_list = data['Species'].unique()
+    # class_dict = {}
+    # for i in range(len(class_list)):
+    #     class_dict[class_list[i]] = 0
 
-    # print(class_dict)
-    for i in range(len(nn)):
-        response = data.iloc[nn[i]][-1]
+    # # print(class_dict)
+    # for i in range(len(nn)):
+    #     response = data.iloc[nn[i]][-1]
  
-        if response in class_dict:
-            class_dict[response] += 1
-        else:
-            class_dict[response] = 1  
+    #     if response in class_dict:
+    #         class_dict[response] += 1
+    #     else:
+    #         class_dict[response] = 1  
 
-    sortedVotes = sorted(class_dict.items(), key=operator.itemgetter(1), reverse=True)
-    print(sortedVotes)
-    return (sortedVotes[0][0],nn)
+    # sortedVotes = sorted(class_dict.items(), key=operator.itemgetter(1), reverse=True)
+    # print(sortedVotes)
+    # return (sortedVotes[0][0],nn)
 
-def in_built_knn(data):
-    x=data.iloc[:,:4]
-    y=data['Species']
-    neigh=KNeighborsClassifier(n_neighbors=4)
-    neigh.fit(data.iloc[:,:4],data["Species"])
-    
 
 def calculate_likelihood_gaussian(df, feat_name, feat_val, Y, label):
     feat = list(df.columns)
@@ -72,7 +117,6 @@ def calculate_likelihood_gaussian(df, feat_name, feat_val, Y, label):
 
 def naive_bayes_gaussian(df, X, Y):
     features = list(df.columns)[:-1]
-    # calculate prior
     classes = sorted(list(df[Y].unique()))
     prior = []
     for i in classes:
@@ -80,14 +124,12 @@ def naive_bayes_gaussian(df, X, Y):
 
     Y_pred = []
     for x in X:
-        # calculate likelihood
         labels = sorted(list(df[Y].unique()))
         likelihood = [1]*len(labels)
         for j in range(len(labels)):
             for i in range(len(features)):
                 likelihood[j] *= calculate_likelihood_gaussian(df, features[i], x[i], Y, labels[j])
 
-        # calculate posterior probability
         post_prob = [1]*len(labels)
         for j in range(len(labels)):
             post_prob[j] = likelihood[j] * prior[j]
@@ -95,8 +137,6 @@ def naive_bayes_gaussian(df, X, Y):
         Y_pred.append(np.argmax(post_prob))
 
     return np.array(Y_pred) 		
-
-
 
 def Sigmoid(Z):
     return 1/(1+np.exp(-Z))
@@ -229,7 +269,7 @@ def plotCf(a,b,t,root,xaxis):
     plt.title(t)
     plt.xlabel('Predicted')
     plt.ylabel('Actual')
-    tick_marks = np.arange(len(set(a))) # length of classes
+    tick_marks = np.arange(len(set(a))) 
     class_labels = ['0','1']
     plt.xticks(tick_marks,class_labels)
     plt.yticks(tick_marks,class_labels)
@@ -252,13 +292,51 @@ def main():
 	print(confusion_matrix(Y_test, Y_pred))
 	print(f1_score(Y_test, Y_pred))
 
-	# testSet = [[2.4, 3.6, 4.4]]
-	# k = int(input())
-	# test = pd.DataFrame(testSet)
-	# nn = knn(data, test,k)
-	# print(nn)
+def knn_main(file_name,root):
+    # file_name="D:/College/BTech/SEM 7/Data Mining/DataSet/iris.csv"
+    data = pd.read_csv(file_name)
+    # x  =  data.drop(['Species'],axis=1)
+    # y = data['Species']
+    # # print(x)
+    # testSet = [[5.1,3.5,1.4,0.2]]
+    # x_train, x_test,y_train,y_test = train_test_split(x,y,test_size=0.3)
+    # knn = KNeighborsClassifier(n_neighbors=3)
+    # knn.fit(x_train,y_train)
+    # y_pred = knn.predict(x_test)
+    # print(y_pred)
+    # # print(x_train,x_test,y_train,y_test)
+    # # k = int(input())
+    # test = pd.DataFrame(testSet)
+    # nn = myknn(data, test,3)
+    # print(nn)
+    #Initialize a Label to display the User Input
+    label=Label(root, text="Enter No. of neighbors (k) ", font=("Helvetica",12))
+    label.place(x=10,y=30)
 
-	
+    entry= Entry(root, width= 40)
+    entry.focus_set()
+    entry.place(x=230,y=30)
+    
+    label1=Label(root, text="Enter Test Set (1,2,3) ", font=("Helvetica",12))
+    label1.place(x=10,y=70)
+
+    entry1 = Entry(root, width= 40)
+    entry1.focus_set()
+    entry1.place(x=230,y=70)
+    def test():
+        string1 = entry.get()
+        string2 = entry1.get()
+        string2 = string2.replace(" ", "")
+        x = string2.split(",")
+        y = []
+        for item in x:
+            y.append(float(item))
+        # print(y,string1)
+        myknn(data,int(string1.replace(" ", "")),y,root)
+
+    Button(root,text="Compute",command= lambda:test()).place(x=10,y=100)
+
+
 
 def ann(filename,root):
     df = pd.read_csv(filename)
@@ -318,11 +396,5 @@ def ann(filename,root):
     yvalh, loss = nn.forward()
     print("\ny",np.around(yval[:,0:50,], decimals=0).astype(np.int))       
     print("\nyh",np.around(yvalh[:,0:50,], decimals=0).astype(np.int),"\n")     
-# if __name__ == "__main__":
-    # main()
-    # ann()
 
 
-# upload data
-# split into test and train
-# 
