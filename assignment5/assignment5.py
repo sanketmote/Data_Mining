@@ -280,18 +280,32 @@ def plotCf(a,b,t,root,xaxis):
     plt1 = FigureCanvasTkAgg(fig, root) 
     plt1.get_tk_widget().place(x=xaxis,y=130)
 
-def main():
-	file_name="D:/College/BTech/SEM 7/Data Mining/DataSet/breast-cancer.csv"
-	data = pd.read_csv(file_name)
-	print(data)
-	train, test = train_test_split(data, test_size=.2, random_state=41)
-	print(test,train)
-	X_test = test.iloc[:,:-1].values
-	Y_test = test.iloc[:,-1].values
-	Y_pred = naive_bayes_gaussian(train, X=X_test, Y="diagnosis")
-	print(confusion_matrix(Y_test, Y_pred))
-	print(f1_score(Y_test, Y_pred))
+def main(root):
+    file_name="D:/College/BTech/SEM 7/Data Mining/DataSet/breast-cancer.csv"
+    data = pd.read_csv(file_name)
+    cols = []
+    for i in data.columns:
+        cols.append(i)
+    clickedAttribute = StringVar(root)
+    clickedAttribute.set("Select Attribute")
+    dropCols = OptionMenu(root, clickedAttribute, *cols)
+    dropCols.place(x=20,y=20)
+    Button(root,text="Measure",command= lambda:my_nbg(root,data,clickedAttribute)).place(x=160,y=20)
 
+def my_nbg(root,data,clickedAttribute):
+    
+    print(data)
+    train, test = train_test_split(data, test_size=.2, random_state=41)
+    print(test,train)
+    X_test = test.iloc[:,:-1].values
+    Y_test = test.iloc[:,-1].values
+    Y_pred = naive_bayes_gaussian(train, X=X_test, Y="diagnosis")
+    print(confusion_matrix(Y_test, Y_pred))
+    print(f1_score(Y_test, Y_pred))
+    Label(root,text="Accuracy "+str(f1_score(Y_test, Y_pred)),fg='red').place(x=20,y=70)
+    Label(root,text="confusion Matrix "+str(confusion_matrix(Y_test, Y_pred)),fg='red').place(x=20,y=110)
+
+# main()
 def knn_main(file_name,root):
     # file_name="D:/College/BTech/SEM 7/Data Mining/DataSet/iris.csv"
     data = pd.read_csv(file_name)

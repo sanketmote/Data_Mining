@@ -312,7 +312,7 @@ class Assignment5(tk.Frame):
         if(title_name=="ANN classifier"):
             ann(file_name,self._frame)
         elif(title_name=="Naïve Bayesian Classifier."):
-            main()
+            main(self._frame)
         elif(title_name=="k-NN classifier"):
             knn_main(file_name, self._frame)
         
