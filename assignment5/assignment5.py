@@ -1,11 +1,12 @@
 import pandas as pd
 import operator
 import numpy as np  
-from sklearn.neighbors import KNeighborsClassifier	
+from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix, f1_score
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.preprocessing import StandardScaler 
+from sklearn.preprocessing import LabelEncoder 
 from sklearn import metrics
 import itertools
 import matplotlib.pyplot as plt 
@@ -238,17 +239,37 @@ class dlnet:
         np.random.seed(1)                         
     
         self.nInit()
-    
-        for i in range(0, iter):
+        i = 1
+        prvloss = 0
+        while(i<iter):
             Yh, loss=self.forward()
+            if(loss < 0.09):
+                # prvloss = i
+                break
             self.backward()
             # Label(root,text="wait : "+str(100 - (100*i/iter)),fg='red',font=("Helvetica",12)).place(x=600,y=10)
-        
-            if i % 500 == 0:
+            # print(i)
+            if i % 10 == 0:
                 print ("Cost after iteration %i: %f" %(i, loss))
-                print(100*i/iter)
+                # print(100*i/iter)
 
                 self.loss.append(loss)
+            prvloss = loss
+            i = i+1
+            
+            
+        # for i in range(0, iter):
+        #     Yh, loss=self.forward()
+        #     self.backward()
+        #     # Label(root,text="wait : "+str(100 - (100*i/iter)),fg='red',font=("Helvetica",12)).place(x=600,y=10)
+        #     print(loss-prvloss)
+        #     # prvloss = loss
+        #     if i % 100 == 0:
+        #         # print ("Cost after iteration %i: %f" %(i, loss))
+        #         print(100*i/iter)
+
+        #         self.loss.append(loss)
+        
         fig, ax = plt.subplots(figsize=(3.5, 3.5)) 
         # Label(root,text="Done "+str(0),fg='red',font=("Helvetica",12)).place(x=600,y=10)
 
@@ -376,6 +397,7 @@ def ann(filename,root):
     scaled_df=df
     names = df.columns[0:10]
     scaler = MinMaxScaler() 
+    
     scaled_df = scaler.fit_transform(df.iloc[:,0:10]) 
     scaled_df = pd.DataFrame(scaled_df, columns=names)
     x=scaled_df.iloc[0:500,1:10].values.transpose()
@@ -389,7 +411,7 @@ def ann(filename,root):
     nn = dlnet(x,y)
     nn.lr=0.07
     nn.dims = [9, 15, 1]
-    nn.gd(x, y,root, iter = 30000)
+    nn.gd(x, y,root, iter = 70000)
     pred_train = nn.pred(x, y)
     pred_test = nn.pred(xval, yval)
     Label(root,text="Accuracy: "+str(np.sum((pred_test == yval)/xval.shape[1])),fg='red',font=("Helvetica",12)).place(x=10,y=30)
@@ -412,3 +434,36 @@ def ann(filename,root):
     print("\nyh",np.around(yvalh[:,0:50,], decimals=0).astype(np.int),"\n")     
 
 
+def log_reg(df,targetAttr,colums,svalue):
+    le = LabelEncoder()
+    label = le.fit_transform(df[targetAttr])
+    df.drop(targetAttr, axis=1, inplace=True)
+    df[targetAttr] = label
+    features = list(colums)
+    features.remove(targetAttr)
+    X = df[features]
+    Y = df[targetAttr]
+    X_train, X_test, y_train, y_test = train_test_split(
+            X, Y, test_size = svalue, random_state = 0)
+    regr = LinearRegression()
+    regr.fit(X_train, y_train)
+    # col1, col2= st.columns(2)
+    # with col1:
+    #     #Quartile Q3
+    #     st.write('coefficient : ')
+    #     st.write(regr.coef_)
+    # with col2:
+    #     st.write('intercept : ')
+    #     st.write(regr.intercept_)
+    # st.text("")
+    # st.subheader("Score:")
+    # st.write(regr.score(X_test, y_test))
+    y_pred = regr.predict(X_test)
+    # col1, col2= st.columns(2)
+    # with col1:
+    #     st.write('mean_squared_error : ')
+    #     st.write(mean_squared_error(y_test, y_pred))
+    # with col2:
+    #     st.write('mean_absolute_error : ')
+    #     st.write(mean_absolute_error(y_test, y_pred))
+    # st.text("")
