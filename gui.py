@@ -5,8 +5,11 @@ from assignment1.assignment1 import *
 from assignment2.assignment2 import *
 from assignment3.assignment3 import *
 from assignment5.assignment5 import *
+from assignment6.kmeans import *
 
 file_name = ""
+data = pd.read_csv('D:/College/BTech/SEM 7/Data Mining/DataSet/Iris.csv')
+
 class DataTable(ttk.Treeview):
     def __init__(self, parent):
         super().__init__(parent)
@@ -52,7 +55,9 @@ class GUI(tk.Tk):
         self.title("Data Analysis Tool")
         # self.create_widgets()
         self.resizable(0, 0)
-        self.geometry('1200x600+10+10')
+        # self.geometry('1200x600+10+10')
+        self.geometry('%dx%d'%(self.winfo_screenwidth(),self.winfo_screenheight()))
+        # self.attributes('-fullscreen',True)
         self._frame = None
         self.menu_bar()
         self.data_table = DataTable(self)
@@ -71,6 +76,8 @@ class GUI(tk.Tk):
         ass_3 = Button(frame,text="Assignment 3 - 4",bg='orange',relief='flat',padx=10,pady=10,command=lambda:self.switch_frame(Assignment3))
         ass_4 = Button(frame,text="Assignment 4",bg='orange',relief='flat',padx=10,pady=10,command=lambda:self.switch_frame(Assignment3))
         ass_5 = Button(frame,text="Assignment 5",bg='orange',relief='flat',padx=10,pady=10,command=lambda:self.switch_frame(Assignment5))
+        ass_6 = Button(frame,text="Assignment 6",bg='orange',relief='flat',padx=10,pady=10,command=lambda:self.switch_frame(Assignment6))
+
         # Put them on the frame
         # ass_1.grid(row=0,column=0,padx=10,pady=10)
         ass_1.place(x=0,y=5)
@@ -78,6 +85,7 @@ class GUI(tk.Tk):
         ass_3.place(x=0,y=75)
         # ass_4.place(x=0,y=110)
         ass_5.place(x=0,y=110)
+        ass_6.place(x=0,y=145)
 
     def menu_bar(self):
         self.menubar = Menu(self)
@@ -89,6 +97,8 @@ class GUI(tk.Tk):
                 self._frame.destroy()
             global file_name 
             file_name = open_file(self)
+            global data
+            data = pd.read_csv(file_name)
             def ass2():
                 assignment_2(file_name)
             self.file_menu.add_command(
@@ -317,8 +327,36 @@ class Assignment5(tk.Frame):
             knn_main(file_name, self._frame)
         
 
-        
-
+class Assignment6(tk.Frame):
+    def __init__(self, master):
+        tk.Frame.__init__(self, master)
+        self.master = master
+        # self['width']=800
+        self.pack(fill=BOTH,side=RIGHT,expand=True)
+        self._frame =None
+        tk.Button(self, text="Hierarchical Clustering",
+                  command=lambda:self.sub_frame("Hierarchical Clustering") ).place(x=80, y=20)
+        tk.Button(self, text="k-Means",
+                  command=lambda: self.sub_frame("k-Means")).place(x=280, y=20)
+        tk.Button(self, text="k-Medoids classifier",
+                  command=lambda: self.sub_frame("k-Medoids classifier")).place(x=400, y=20)
+        tk.Button(self, text="DBSCAN",
+                  command=lambda: self.sub_frame("DBSCAN")).place(x=600, y=20)
+    def sub_frame(self,title_name):
+        new_frame = Frame(self,width=1200,height=600)
+        if self._frame is not None:
+            self._frame.destroy()
+        self._frame = new_frame
+        self._frame.place(x=20,y=40)
+        if(title_name=="Hierarchical Clustering"):
+            ann(file_name,self._frame)
+        elif(title_name=="k-Means"):
+            kmeans_main(data,self._frame)
+        elif(title_name=="k-Medoids classifier"):
+            knn_main(file_name, self._frame)
+        elif(title_name=="DBSCAN"):
+            kmeans_main(file_name, self._frame)         
+            # dbscan(file_name,self._frame)
 
 class PageTwo(tk.Frame):
     def __init__(self, master):
