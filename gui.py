@@ -6,6 +6,10 @@ from assignment2.assignment2 import *
 from assignment3.assignment3 import *
 from assignment5.assignment5 import *
 from assignment6.kmeans import *
+from assignment6.KMedoids import *
+from assignment8.assignment8 import *
+from assignment8.bfs import *
+from assignment8.dfs import *
 
 file_name = ""
 data = pd.read_csv('D:/College/BTech/SEM 7/Data Mining/DataSet/Iris.csv')
@@ -77,6 +81,8 @@ class GUI(tk.Tk):
         ass_4 = Button(frame,text="Assignment 4",bg='orange',relief='flat',padx=10,pady=10,command=lambda:self.switch_frame(Assignment3))
         ass_5 = Button(frame,text="Assignment 5",bg='orange',relief='flat',padx=10,pady=10,command=lambda:self.switch_frame(Assignment5))
         ass_6 = Button(frame,text="Assignment 6",bg='orange',relief='flat',padx=10,pady=10,command=lambda:self.switch_frame(Assignment6))
+        ass_7 = Button(frame,text="Assignment 7",bg='orange',relief='flat',padx=10,pady=10,command=lambda:self.switch_frame(Assignment7))
+        ass_8 = Button(frame,text="Assignment 8",bg='orange',relief='flat',padx=10,pady=10,command=lambda:self.switch_frame(Assignment8))
 
         # Put them on the frame
         # ass_1.grid(row=0,column=0,padx=10,pady=10)
@@ -86,6 +92,8 @@ class GUI(tk.Tk):
         # ass_4.place(x=0,y=110)
         ass_5.place(x=0,y=110)
         ass_6.place(x=0,y=145)
+        ass_7.place(x=0,y=180)
+        ass_8.place(x=0,y=215)
 
     def menu_bar(self):
         self.menubar = Menu(self)
@@ -343,20 +351,109 @@ class Assignment6(tk.Frame):
         tk.Button(self, text="DBSCAN",
                   command=lambda: self.sub_frame("DBSCAN")).place(x=600, y=20)
     def sub_frame(self,title_name):
-        new_frame = Frame(self,width=1200,height=600)
+        new_frame = Frame(self,width=1600,height=800)
         if self._frame is not None:
             self._frame.destroy()
         self._frame = new_frame
-        self._frame.place(x=20,y=40)
+        self._frame.place(x=20,y=50)
         if(title_name=="Hierarchical Clustering"):
             ann(file_name,self._frame)
         elif(title_name=="k-Means"):
             kmeans_main(data,self._frame)
         elif(title_name=="k-Medoids classifier"):
-            knn_main(file_name, self._frame)
+            data = pd.read_csv(file_name)
+            k_medoids(data, self._frame)
         elif(title_name=="DBSCAN"):
             kmeans_main(file_name, self._frame)         
             # dbscan(file_name,self._frame)
+
+
+
+class Assignment7(tk.Frame):
+    def __init__(self, master):
+        tk.Frame.__init__(self, master)
+        self.master = master
+        # self['width']=800
+        self.pack(fill=BOTH,side=RIGHT,expand=True)
+        self._frame =None
+        tk.Button(self, text="Hierarchical Clustering",
+                  command=lambda:self.sub_frame("Hierarchical Clustering") ).place(x=80, y=20)
+        tk.Button(self, text="k-Means",
+                  command=lambda: self.sub_frame("k-Means")).place(x=280, y=20)
+        tk.Button(self, text="k-Medoids classifier",
+                  command=lambda: self.sub_frame("k-Medoids classifier")).place(x=400, y=20)
+        tk.Button(self, text="DBSCAN",
+                  command=lambda: self.sub_frame("DBSCAN")).place(x=600, y=20)
+
+class Assignment8(tk.Frame):
+    def __init__(self, master):
+        tk.Frame.__init__(self, master)
+        self.master = master
+        # self['width']=800
+        self.pack(fill=BOTH,side=RIGHT,expand=True)
+        self._frame =None
+        tk.Button(self, text="BFS",
+                  command=lambda:self.sub_frame("1") ).place(x=80, y=20)
+        tk.Button(self, text="DFS",
+                  command=lambda: self.sub_frame("2")).place(x=200, y=20)
+        tk.Button(self, text="Rank of Web Page",
+                  command=lambda: self.sub_frame("3")).place(x=300, y=20)
+        tk.Button(self, text="HITS Algorithm",
+                  command=lambda: self.sub_frame("4")).place(x=500, y=20)
+    def sub_frame(self,title_name):
+        new_frame = Frame(self,width=1200,height=600)
+        if self._frame is not None:
+            self._frame.destroy()
+        self._frame = new_frame
+        self._frame.place(x=20,y=50)
+        if(title_name=="1"):
+            label=Label(self._frame, text="Enter URL", font=("Helvetica",12))
+            label.place(x=30,y=50)
+            entry= Entry(self._frame, width= 40)
+            entry.focus_set()
+            entry.place(x=230,y=50)
+            def bfs_test():
+                url = BFS_crawler(entry.get())
+                print(url)
+                s = Scrollbar(self._frame)
+                t = Text(self._frame, width=800)
+                t.focus_set()
+                # s.pack(side=RIGHT, fill=Y)
+                t.place(x=20,y=120)
+                s.config(command=t.yview)
+                t.config(yscrollcommand=s.set)
+                j = 0
+                for i in url: 
+                    t.insert(tk.END, str(j) + " " + i + "\n")
+                    j = j + 1
+            Button(self._frame,text="Compute",command= lambda:bfs_test()).place(x=230,y=70)
+            
+        elif(title_name=="2"):
+            label=Label(self._frame, text="Enter URL", font=("Helvetica",12))
+            label.place(x=30,y=50)
+            entry= Entry(self._frame, width= 40)
+            entry.focus_set()
+            entry.place(x=230,y=50)
+            def dfs_test():
+                url = DFS_crawler(entry.get())
+                print(url)
+                s = Scrollbar(self._frame)
+                t = Text(self._frame, width=800)
+                t.focus_set()
+                # s.pack(side=RIGHT, fill=Y)
+                t.place(x=20,y=120)
+                s.config(command=t.yview)
+                t.config(yscrollcommand=s.set)
+                j = 0
+                for i in url: 
+                    t.insert(tk.END, str(j) + " " + i + "\n")
+                    j = j + 1
+            Button(self._frame,text="Compute",command= lambda:dfs_test()).place(x=230,y=70)
+            
+        elif(title_name=="3" or title_name=="4"):
+            filename = open_file(self._frame)
+            print(filename)
+            ass8_main(title_name, filename)
 
 class PageTwo(tk.Frame):
     def __init__(self, master):

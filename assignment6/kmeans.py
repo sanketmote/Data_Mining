@@ -106,5 +106,5 @@ def kmeans_main(data,root):
     plt1 = FigureCanvasTkAgg(fig, root) 
     plt1.get_tk_widget().place(x=40,y=130)
     # plt.show()
-# main()
+# kmeans_main()
 
