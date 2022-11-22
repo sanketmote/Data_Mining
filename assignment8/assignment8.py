@@ -173,7 +173,7 @@ def ass8_main(operation,data):
             # table = st.table(df)
 
             # st.write("Total page rank sum: "+str(np.sum(graph.get_pagerank_list())))
-        
+            return (df,"Total page rank sum: " + str(np.sum(graph.get_pagerank_list())),"")
     if operation=="4":
         
         file = data
@@ -219,3 +219,4 @@ def ass8_main(operation,data):
             # table = st.table(df)
 
             # print(sum(auth_list)," ",sum(hub_list))
+            return (df,"Total Auth Value : " + str(sum(auth_list)),"Total Hub Value : "+str(sum(hub_list)))

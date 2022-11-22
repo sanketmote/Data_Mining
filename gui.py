@@ -1,6 +1,7 @@
 from cmath import exp
 import tkinter as tk
 from tkinter import Menu
+from pandastable import Table, TableModel
 from assignment1.assignment1 import *
 from assignment2.assignment2 import *
 from assignment3.assignment3 import *
@@ -10,6 +11,8 @@ from assignment6.KMedoids import *
 from assignment8.assignment8 import *
 from assignment8.bfs import *
 from assignment8.dfs import *
+from assignment7.apriorialgo import *
+from assignment6.dbscan import *
 
 file_name = ""
 data = pd.read_csv('D:/College/BTech/SEM 7/Data Mining/DataSet/Iris.csv')
@@ -356,6 +359,7 @@ class Assignment6(tk.Frame):
             self._frame.destroy()
         self._frame = new_frame
         self._frame.place(x=20,y=50)
+        data = pd.read_csv(file_name)
         if(title_name=="Hierarchical Clustering"):
             ann(file_name,self._frame)
         elif(title_name=="k-Means"):
@@ -364,8 +368,8 @@ class Assignment6(tk.Frame):
             data = pd.read_csv(file_name)
             k_medoids(data, self._frame)
         elif(title_name=="DBSCAN"):
-            kmeans_main(file_name, self._frame)         
-            # dbscan(file_name,self._frame)
+            # kmeans_main(file_name, self._frame)         
+            main_dbscan(data,self._frame)
 
 
 
@@ -376,14 +380,45 @@ class Assignment7(tk.Frame):
         # self['width']=800
         self.pack(fill=BOTH,side=RIGHT,expand=True)
         self._frame =None
-        tk.Button(self, text="Hierarchical Clustering",
-                  command=lambda:self.sub_frame("Hierarchical Clustering") ).place(x=80, y=20)
-        tk.Button(self, text="k-Means",
-                  command=lambda: self.sub_frame("k-Means")).place(x=280, y=20)
-        tk.Button(self, text="k-Medoids classifier",
-                  command=lambda: self.sub_frame("k-Medoids classifier")).place(x=400, y=20)
-        tk.Button(self, text="DBSCAN",
-                  command=lambda: self.sub_frame("DBSCAN")).place(x=600, y=20)
+        tk.Button(self, text="frequent item sets",
+                  command=lambda:self.sub_frame("1") ).place(x=80, y=20)
+        tk.Button(self, text="Association Rules",
+                  command=lambda: self.sub_frame("2")).place(x=280, y=20)
+    
+    def sub_frame(self,title_name):
+        new_frame = Frame(self,width=1200,height=600)
+        if self._frame is not None:
+            self._frame.destroy()
+        self._frame = new_frame
+        self._frame.place(x=20,y=50)
+        bread = pd.read_csv(file_name)
+
+        bread = bread.drop_duplicates()
+
+        bread = bread.drop('DateTime', axis=1)
+        print(len(set(bread['Items'])))
+        print(bread.head)
+
+        transaction = pd.crosstab(index= bread['TransactionNo'], columns= bread['Items'])
+        print(transaction)
+        my_freq_itemset = NONE
+        
+        if(title_name == "1"):
+            my_freq_itemset = aa_helper(title_name,transaction, bread)
+            
+            print(type(my_freq_itemset))
+            f = Frame(self._frame)
+            f.place(x=20,y=50)
+            pt = Table(f,dataframe=my_freq_itemset,showstatusbar=True)
+            pt.show()
+        elif(title_name == "2"):
+            my_freq_itemset = aa_helper(title_name,transaction, bread)
+            
+            print(my_freq_itemset)
+            f = Frame(self._frame)
+            f.place(x=20,y=50)
+            pt = Table(f,dataframe=my_freq_itemset,showstatusbar=True)
+            pt.show()
 
 class Assignment8(tk.Frame):
     def __init__(self, master):
@@ -453,7 +488,14 @@ class Assignment8(tk.Frame):
         elif(title_name=="3" or title_name=="4"):
             filename = open_file(self._frame)
             print(filename)
-            ass8_main(title_name, filename)
+            df,x,y = ass8_main(title_name, filename)
+            label=Label(self._frame, text=x + " " + y, font=("Helvetica",12))
+            label.place(x=30,y=50)
+            f = Frame(self._frame)
+            f.place(x=30,y=90)
+            pt = Table(f,dataframe=df,showstatusbar=True)
+            pt.show()
+
 
 class PageTwo(tk.Frame):
     def __init__(self, master):

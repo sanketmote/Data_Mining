@@ -104,11 +104,11 @@ def main_dbscan(data,root):
     Clickattribute1 = StringVar(root)
     Clickattribute1.set("Select Attribute 1")
     dropCols = OptionMenu(root, Clickattribute1,*cols)
-    dropCols.place(x=30,y=60)
+    dropCols.place(x=30,y=90)
     Clickattribute2 = StringVar(root)
     Clickattribute2.set("Select Attribute 2")
     dropCols1 = OptionMenu(root, Clickattribute2,*cols)
-    dropCols1.place(x=190,y=60)
+    dropCols1.place(x=190,y=90)
 
     dataset = []
     arr1 = []
@@ -121,10 +121,10 @@ def main_dbscan(data,root):
     entry.place(x=230,y=30)
     
     label1=Label(root, text="Insert mimimum number of points in cluster", font=("Helvetica",12))
-    label1.place(x=30,y=30)
+    label1.place(x=30,y=60)
     entry1= Entry(root, width= 40)
     entry1.focus_set()
-    entry1.place(x=230,y=30)
+    entry1.place(x=230,y=60)
     
     
     def helper():
@@ -145,4 +145,4 @@ def main_dbscan(data,root):
         C = DBSCAN(dataset, r, mnp)
         draw(C, dataset,attribute1,attribute2)    
     
-    Button(root,text="Measure",command= lambda:helper()).place(x=30,y=90)
+    Button(root,text="Measure",command= lambda:helper()).place(x=30,y=130)
