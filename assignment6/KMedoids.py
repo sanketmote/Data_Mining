@@ -146,7 +146,7 @@ def k_medoids(data,root):
                                 cost = cost_
                                 swap = True
                                 self.clusters = clusters_
-                                print(self.medoids)
+                                print("Medoids Changed to: ",self.medoids)
                                 self.visualization()
                                 # st.write(
                                 #     f"Medoids Changed to: {self.medoids}.")
@@ -154,16 +154,14 @@ def k_medoids(data,root):
                                 # count += 1
                                 
                                 
-                                # st.pyplot()
                 count += 1
 
                 if count >= self.iters:
-                    # st.write("End of the iterations.")
+                    print("End of the iterations.")
                     break
                 if not swap:
-                    # st.write("End.")
+                    print("End")
                     break
-    # dt = np.random.randint(0,100, (100,2))
     datat = []
     label=Label(root, text="Enter value fot k", font=("Helvetica",12))
     label.place(x=30,y=30)
