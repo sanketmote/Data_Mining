@@ -92,7 +92,7 @@ def k_medoids(data,root):
                             for k, v in tmp_clusters.items()}
             return tmp_clusters, cst
         
-        def visualization(self):
+        def visualization(self,root):
             colors = np.array(np.random.randint(
                 0, 255, size=(self.k, 4)))/255
             colors[:, 3] = 1
@@ -106,7 +106,7 @@ def k_medoids(data,root):
             # # plt.show()
             plt2 = FigureCanvasTkAgg(fig, root) 
             plt2.get_tk_widget().place(x=700,y=130)
-        def fit(self):
+        def fit(self,root):
 
             self.datanp = np.asarray(data)
             samples, _ = self.datanp.shape
@@ -147,7 +147,7 @@ def k_medoids(data,root):
                                 swap = True
                                 self.clusters = clusters_
                                 print("Medoids Changed to: ",self.medoids)
-                                self.visualization()
+                                self.visualization(root)
                                 # st.write(
                                 #     f"Medoids Changed to: {self.medoids}.")
                                 # st.subheader(f"Step :{count+1}")
@@ -188,4 +188,4 @@ def k_medoids(data,root):
             tmp.append(arr2[i])
             datat.append(tmp)
         kmedoid = KMedoidsClass(datat, int(k), 10,attribute1,attribute2)
-        kmedoid.fit()
+        kmedoid.fit(root)

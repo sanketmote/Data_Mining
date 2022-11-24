@@ -65,6 +65,7 @@ class GUI(tk.Tk):
         # self.geometry('1200x600+10+10')
         self.geometry('%dx%d'%(self.winfo_screenwidth(),self.winfo_screenheight()))
         # self.attributes('-fullscreen',True)
+        self.config(bg="#f27d92")
         self._frame = None
         self.menu_bar()
         self.data_table = DataTable(self)
@@ -74,18 +75,18 @@ class GUI(tk.Tk):
         lbl.place(x=140,y=5)
 
     def side_bar(self):
-        frame = Frame(self,bg='orange',width=130,height=650)
+        frame = Frame(self,bg='#55bdca',width=130,height=650)
         # frame.grid(row=0,column=0) 
         frame.pack(side=LEFT,fill=BOTH)
         # Make the buttons with the icons to be shown
-        ass_1 = Button(frame,text="Assignment 1",bg='orange',relief='flat',padx=10,pady=10,command=lambda:self.switch_frame(Assignment1))
-        ass_2 = Button(frame,text="Assignment 2",bg='orange',relief='flat',padx=10,pady=10,command=lambda:self.switch_frame(Assignment2))
-        ass_3 = Button(frame,text="Assignment 3 - 4",bg='orange',relief='flat',padx=10,pady=10,command=lambda:self.switch_frame(Assignment3))
-        ass_4 = Button(frame,text="Assignment 4",bg='orange',relief='flat',padx=10,pady=10,command=lambda:self.switch_frame(Assignment3))
-        ass_5 = Button(frame,text="Assignment 5",bg='orange',relief='flat',padx=10,pady=10,command=lambda:self.switch_frame(Assignment5))
-        ass_6 = Button(frame,text="Assignment 6",bg='orange',relief='flat',padx=10,pady=10,command=lambda:self.switch_frame(Assignment6))
-        ass_7 = Button(frame,text="Assignment 7",bg='orange',relief='flat',padx=10,pady=10,command=lambda:self.switch_frame(Assignment7))
-        ass_8 = Button(frame,text="Assignment 8",bg='orange',relief='flat',padx=10,pady=10,command=lambda:self.switch_frame(Assignment8))
+        ass_1 = Button(frame,text="Assignment 1",bg='#55bdca',relief='flat',padx=10,pady=10,command=lambda:self.switch_frame(Assignment1))
+        ass_2 = Button(frame,text="Assignment 2",bg='#55bdca',relief='flat',padx=10,pady=10,command=lambda:self.switch_frame(Assignment2))
+        ass_3 = Button(frame,text="Assignment 3 - 4",bg='#55bdca',relief='flat',padx=10,pady=10,command=lambda:self.switch_frame(Assignment3))
+        ass_4 = Button(frame,text="Assignment 4",bg='#55bdca',relief='flat',padx=10,pady=10,command=lambda:self.switch_frame(Assignment3))
+        ass_5 = Button(frame,text="Assignment 5",bg='#55bdca',relief='flat',padx=10,pady=10,command=lambda:self.switch_frame(Assignment5))
+        ass_6 = Button(frame,text="Assignment 6",bg='#55bdca',relief='flat',padx=10,pady=10,command=lambda:self.switch_frame(Assignment6))
+        ass_7 = Button(frame,text="Assignment 7",bg='#55bdca',relief='flat',padx=10,pady=10,command=lambda:self.switch_frame(Assignment7))
+        ass_8 = Button(frame,text="Assignment 8",bg='#55bdca',relief='flat',padx=10,pady=10,command=lambda:self.switch_frame(Assignment8))
 
         # Put them on the frame
         # ass_1.grid(row=0,column=0,padx=10,pady=10)
@@ -231,6 +232,7 @@ class GUI(tk.Tk):
             self._frame.destroy()
         # new_frame
         self._frame = new_frame
+        self._frame.config(bg="#f27d92")
         self._frame.pack()
 
 
@@ -345,8 +347,10 @@ class Assignment6(tk.Frame):
         # self['width']=800
         self.pack(fill=BOTH,side=RIGHT,expand=True)
         self._frame =None
-        tk.Button(self, text="Hierarchical Clustering",
-                  command=lambda:self.sub_frame("Hierarchical Clustering") ).place(x=80, y=20)
+        tk.Button(self, text="AGNES",
+                  command=lambda:self.sub_frame("AGNES") ).place(x=80, y=20)
+        tk.Button(self, text="DIANA",
+                  command=lambda:self.sub_frame("DIANA") ).place(x=150, y=20)
         tk.Button(self, text="k-Means",
                   command=lambda: self.sub_frame("k-Means")).place(x=280, y=20)
         tk.Button(self, text="k-Medoids classifier",
@@ -354,14 +358,16 @@ class Assignment6(tk.Frame):
         tk.Button(self, text="DBSCAN",
                   command=lambda: self.sub_frame("DBSCAN")).place(x=600, y=20)
     def sub_frame(self,title_name):
-        new_frame = Frame(self,width=1600,height=800)
+        new_frame = Frame(self,width=1600,height=800,bg="#f27d92")
         if self._frame is not None:
             self._frame.destroy()
         self._frame = new_frame
         self._frame.place(x=20,y=50)
         data = pd.read_csv(file_name)
-        if(title_name=="Hierarchical Clustering"):
-            ann(file_name,self._frame)
+        if(title_name=="AGNES"):
+            main_asgens(data,self._frame)
+        elif(title_name=="DIANA"):
+            main_diana(data,self._frame)
         elif(title_name=="k-Means"):
             kmeans_main(data,self._frame)
         elif(title_name=="k-Medoids classifier"):
@@ -386,7 +392,7 @@ class Assignment7(tk.Frame):
                   command=lambda: self.sub_frame("2")).place(x=280, y=20)
     
     def sub_frame(self,title_name):
-        new_frame = Frame(self,width=1200,height=600)
+        new_frame = Frame(self,width=1200,height=600,bg="#f27d92")
         if self._frame is not None:
             self._frame.destroy()
         self._frame = new_frame
@@ -436,7 +442,7 @@ class Assignment8(tk.Frame):
         tk.Button(self, text="HITS Algorithm",
                   command=lambda: self.sub_frame("4")).place(x=500, y=20)
     def sub_frame(self,title_name):
-        new_frame = Frame(self,width=1200,height=600)
+        new_frame = Frame(self,width=1200,height=600,bg="#f27d92")
         if self._frame is not None:
             self._frame.destroy()
         self._frame = new_frame

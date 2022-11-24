@@ -13,7 +13,7 @@ df = df['Open'].values
 df = df.reshape(-1, 1)
 
 # df.dropna()
-print(df.shape)
+print(df)
 print(df.shape[0])
 
 print("................")
@@ -85,7 +85,7 @@ model = load_model('D:\College\BTech\SEM 7\Data Mining\Assignment9\stock_predict
 predictions = model.predict(x_test)
 predictions = scaler.inverse_transform(predictions)
 y_test_scaled = scaler.inverse_transform(y_test.reshape(-1, 1))
-# print('predictions',predictions)
+print('predictions',predictions)
 fig, ax = plt.subplots(figsize=(16,8))
 plt.plot(y_test_scaled, color='red', label='Original price')
 plt.plot(predictions, color='cyan', label='Predicted price')
